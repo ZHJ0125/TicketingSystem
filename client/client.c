@@ -14,6 +14,8 @@ static  GtkTextIter iter;
 
 int isconnected=FALSE;		//是否已连接服务器
 
+
+// 以下函数声明应该是与GTK界面显示有关，同时也实现了不同的功能
 void connectserver(GtkWidget *widget, gpointer data);
 void disconnect(GtkWidget *widget, gpointer data);
 void buyticket(GtkWidget *widget,gpointer data);
@@ -22,7 +24,8 @@ void inquireall();
 void displaycontents(GtkWidget *widget, gpointer data);
 void about(GtkWidget *widget, gpointer data);
 
-/*生成客户端操作菜单项*/
+// 下面这几个函数，用来对客户端界面和回调函数进行绑定
+/*生成客户端操作菜单项（下拉菜单）*/
 GnomeUIInfo client_operation_menu[]={
 	GNOMEUIINFO_ITEM_NONE("连接服务器" ,"与远程服务器建立连接", connectserver),
 	GNOMEUIINFO_ITEM_NONE("断开连接" ,"断开与远程服务器的连接", disconnect),
@@ -30,13 +33,13 @@ GnomeUIInfo client_operation_menu[]={
 	GNOMEUIINFO_ITEM_NONE("退出" ,"退出程序", gtk_main_quit),
 	GNOMEUIINFO_END
 };
-/*生成航班查询菜单项*/
+/*生成航班查询菜单项（下拉菜单）*/
 GnomeUIInfo inquire_menu[]={
 	GNOMEUIINFO_ITEM_NONE("查询特定航班" ,"查询某一特定航班机票信息", inquireone),
 	GNOMEUIINFO_ITEM_NONE("查询所有航班" ,"查询所有航班机票信息", inquireall),
 	GNOMEUIINFO_END
 };
-/*生成帮助菜单项*/
+/*生成帮助菜单项（下拉菜单）*/
 GnomeUIInfo help_menu[]={
 	GNOMEUIINFO_ITEM_NONE("显示内容" ,"显示帮助内容", displaycontents),
 	GNOMEUIINFO_ITEM_NONE("关于" ,"关于此程序说明", about),
@@ -61,9 +64,10 @@ GnomeUIInfo toolbar[]= {
 };
 
 /*消息内容输出函数*/
+// 该函数将msg信息输出到GTK布局界面上
 void display_info(char *msg, GtkWidget *view)
 {
-	GtkTextBuffer *buffer;              //客户端提示信息缓冲区；
+	GtkTextBuffer *buffer;              //客户端提示信息缓冲区
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
 	gtk_text_buffer_insert(buffer, &iter, msg, -1);
@@ -99,7 +103,7 @@ void connectserver(GtkWidget *widget, gpointer data)
 		/*连接服务器*/
 		ret=connect(socket_fd,(struct sockaddr*)&server, sizeof(server));
 		if(ret<0) {
-			sprintf(msg,"连接服务器出错！\n",SERVER_PORT_NO);
+			sprintf(msg,"连接服务器出错！%d\n",SERVER_PORT_NO);		// 这里改了一下，添加了格式控制符%d
 			display_info(msg,clientwindow);
 			close(socket_fd);
 			return;
@@ -162,6 +166,7 @@ void disconnect(GtkWidget *widget, gpointer data)
 		gtk_widget_set_sensitive(isenable,FALSE);
 	}
 }
+
 /*购买机票对话框的文本输入框，用来获取输入的航班号和票数*/
 struct flight_entry_t {
 	GtkWidget *flight_ID;
@@ -350,7 +355,6 @@ void inquireone()
 
 void inquireall()
 {
-
 	int i,pos;
 	char msg[512];
 	char send_buf[512], recv_buf[512];
@@ -395,7 +399,7 @@ void dialog_ok(GnomeDialog *dialog, gint id,gpointer data)
 	gnome_dialog_close(dialog);
 }
 
-/*帮助－－－显示内容*/
+/*帮助-显示内容*/
 void displaycontents(GtkWidget *widget, gpointer data)
 {
 	GtkWidget *dialog;
@@ -415,21 +419,18 @@ void displaycontents(GtkWidget *widget, gpointer data)
 }
 
 
-/*帮助－－－关于*/
+/*帮助-关于*/
 void about(GtkWidget *widget, gpointer data)
 {
+	GtkWidget *dialog = gtk_about_dialog_new();
+	gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog), "网络售票模拟系统客户端");
+	gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), "0.9");
 
-     GtkWidget *dialog = gtk_about_dialog_new();
-    gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog), "网络售票模拟系统客户端");
-   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), "0.9");
+	gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog),"本程序仅用于教学，请勿用于商业目的。");
+	gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog),"版权所有(Copyright) 刘学勇 \n 2011.11");
 
-   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog),
-     "本程序仅用于教学，请勿用于商业目的。");
-     gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog),
-      "版权所有(Copyright) 刘学勇 \n 2011.11");
-
-  gtk_dialog_run(GTK_DIALOG (dialog));
-  gtk_widget_destroy(dialog);
+	gtk_dialog_run(GTK_DIALOG (dialog));
+	gtk_widget_destroy(dialog);
 }
 
 int main(int argc, char *argv[])
@@ -464,7 +465,6 @@ int main(int argc, char *argv[])
 	vbox=gtk_vbox_new(FALSE,0);
 	gnome_app_set_contents(GNOME_APP(app),vbox);
 
-
 	frame=gtk_frame_new(NULL);
 	gtk_frame_set_label(GTK_FRAME(frame),"客户端信息");
 	gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_ETCHED_OUT);
@@ -486,12 +486,10 @@ int main(int argc, char *argv[])
 	scrolled=gtk_scrolled_window_new(NULL,NULL); /*创建滚动窗口构件*/
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled),clientwindow);/*将文本视图构件加入滚动窗口*/
 
-	gtk_table_attach (GTK_TABLE (table), scrolled, 0, 1, 0, 1, GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-	                                                         GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (table), scrolled, 0, 1, 0, 1, GTK_EXPAND | GTK_SHRINK | GTK_FILL, GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
 	gtk_widget_show_all(app);
 	gtk_main();
 
 	return 0;
 }
-
