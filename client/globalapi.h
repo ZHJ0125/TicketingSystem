@@ -14,6 +14,7 @@
 #include <sys/un.h>
 #include <string.h>
 #include <pthread.h>
+#include <gnome.h>
 
 /*服务器端使用的端口*/
 #define	SERVER_PORT_NO	8889
@@ -49,9 +50,12 @@ pthread_mutex_t 	info_mutex;
 struct stMessage {
 	//消息类型。客户端可以取值为DISCONNECT：断开连接，BUY_TICKET：购买机票，I	INQUIRE_ONE：查询特定航班机票，	INQUIRE_ALL：查询所有航班机票
 	unsigned int 	msg_type;		// 消息类型，用来向服务器请求不同类型的信息
-    unsigned int	flight_ID;      // 航班号
-    unsigned int	ticket_num;     // 机票张数
-    unsigned int	ticket_total_price;     //机票价钱
+	//航班号
+	unsigned int	flight_ID;
+	//机票张数
+	unsigned int	ticket_num;
+	//机票价钱
+	unsigned int	ticket_total_price;
 } message;
 
 /* 将消息数据类型进行初始化 */
@@ -101,7 +105,9 @@ int get_free_info(){
 
 /*释放界面输出信息缓冲区，对info_status的访问同样需要使用互斥保护*/
 // 释放以index为下标的缓冲区
-void free_info(int index){
+void free_info(int index)
+{
+	int i;
 	pthread_mutex_lock(&info_mutex);
 	if(info[index].status==INFO_OCCUPIED){
 		info[index].status=INFO_FREED;
