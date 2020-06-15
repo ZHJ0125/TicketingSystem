@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/scissors.png</file>
+        <file>images/power-off.png</file>
+        <file>images/folder.png</file>
+        <file>images/download.png</file>
+        <file>images/connect.png</file>
+        <file>images/stop.png</file>
+        <file>images/start.png</file>
+    </qresource>
+</RCC>
