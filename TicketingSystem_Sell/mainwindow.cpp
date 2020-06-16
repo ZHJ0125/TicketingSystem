@@ -300,7 +300,7 @@ void MainWindow::on_action_about_triggered(){
     form.addRow(new QLabel("<h1>网络售票模拟系统管理端</h1>"));
     form.addRow(new QLabel("<center>版本 V0.2</center>"));
     form.addRow(new QLabel("本程序仅用于测试，请勿用于商业目的"));
-    form.addRow(new QLabel("作者信息: 孙硕、张厚今、戚莘凯"));
+    form.addRow(new QLabel("作者信息: 孙硕、戚莘凯、张厚今"));
     form.addRow(new QLabel("更新日期: 2020年06月16日"));
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok, &dialog);
     form.addRow(&buttonBox);
