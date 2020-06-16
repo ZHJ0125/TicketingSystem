@@ -3,7 +3,7 @@
 #define	__TICKET_H
 #include "globalapi.h"
 
-#define	FLIGHT_NUM 50		//航班总数
+#define	FLIGHT_NUM 10		//航班总数
 int numRows = 0;
 
 /* 机票的一个简单描述，flight_ID表示航班号，ticket_num表示机票剩余票数 */
@@ -21,7 +21,6 @@ void read_ticket_list(){
     MYSQL mysql;
     MYSQL_RES * result;
     MYSQL_ROW row;
-    int numRows = 0;
     int i = 0;
     mysql_init(&mysql);
     mysql_real_connect(&mysql, "localhost", "zhj", "666588", "linux", 0, NULL, 0);

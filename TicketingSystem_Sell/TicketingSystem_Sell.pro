@@ -22,8 +22,6 @@ SOURCES += \
 HEADERS += \
     globalapi.h \
     mainwindow.h \
-    servicethread.h \
-    threadbuff.h \
     ticket.h
 
 FORMS += \

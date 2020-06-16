@@ -21,7 +21,8 @@ SOURCES += \
 
 HEADERS += \
     globalapi.h \
-    mainwindow.h
+    mainwindow.h \
+    ticket.h
 
 FORMS += \
     mainwindow.ui
@@ -33,3 +34,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     Icon.qrc
+
+LIBS += \
+    -lmysqlclient

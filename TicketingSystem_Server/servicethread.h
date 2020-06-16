@@ -24,7 +24,7 @@ static void thread_err(char *s, int index){
 void * service_thread(void *p){
 	int conn_fd;
 	int buff_index;
-	char	send_buf[1024],recv_buf[512];
+    char	send_buf[1024],recv_buf[1024];
     int		ret,i;
 	struct sockaddr_in	peer_name;
 	socklen_t		peer_name_len;
@@ -45,7 +45,7 @@ void * service_thread(void *p){
 	peer_name_len=sizeof(peer_name);
 	ret=getpeername(conn_fd,(struct sockaddr*)&peer_name, &peer_name_len);
     if(ret==-1){
-        thread_err("获取远端主机地址出错",buff_index);
+        thread_err((char*)"获取远端主机地址出错",buff_index);
     }
 
 	sprintf(msg,"新连接-->线程ID：%d, 连接ID：%d, 线程缓冲区索引号：%d, 远端地址：%s, 端口号：%d\n",(unsigned short)pstruct->tid,conn_fd, buff_index, inet_ntoa(peer_name.sin_addr), ntohs(peer_name.sin_port));
@@ -71,6 +71,9 @@ void * service_thread(void *p){
         /* ret为其他值说明接收到了客户端的请求消息 */
 		init_message();
 		memcpy(&message,recv_buf,sizeof(message));
+        MYSQL mysql;
+        MYSQL_RES * result;
+        char sqlstr[100];
 		switch(message.msg_type) {
             case DISCONNECT:
 				sprintf(msg,"线程 %d  的连接(ID： %d ) 客户端已关闭。服务器端连接也将关闭。\n",(unsigned short)pstruct->tid, conn_fd);
@@ -79,21 +82,33 @@ void * service_thread(void *p){
 				free_buff(buff_index);
 				pthread_exit(NULL);
 				break;
+
             case BUY_TICKET :
-				for(i=0; i<FLIGHT_NUM; i++) {
+                read_ticket_list();     // 读取数据库机票信息
+                mysql_init(&mysql);
+                mysql_real_connect(&mysql, "localhost", "zhj", "666588", "linux", 0, NULL, 0);
+                mysql_query(&mysql, "select * from tickets");
+                result = mysql_store_result(&mysql);//将查询的全部结果读取到客户端
+                numRows = mysql_num_rows(result);   //统计结果集的行数
+                for(i=0; i<numRows; i++) {
 					pthread_mutex_lock(&ticket_list[i].ticket_mutex);
 					if(ticket_list[i].flight_ID==message.flight_ID) {
 						if(ticket_list[i].ticket_num>=message.ticket_num) {		//剩余票数大于请求票数
 							message.msg_type=BUY_SUCCEED;
 							message.ticket_total_price=message.ticket_num*ticket_list[i].ticket_price;
 							ticket_list[i].ticket_num-=message.ticket_num;
+                            /* 更新数据库机票信息 */
+                            sprintf(sqlstr, "update tickets set ticket_num = %d where flight_ID = %d",ticket_list[i].ticket_num,i+1);
+                            mysql_query(&mysql,sqlstr);     // 执行更新语句
+                            mysql_free_result(result);
+                            mysql_close(&mysql);
 							pthread_mutex_unlock(&ticket_list[i].ticket_mutex);
 							sprintf(msg,"客户端 %s 购买机票成功！航班号：%d, 票数：%d, 总票价：%d\n",inet_ntoa(peer_name.sin_addr),message.flight_ID, message.ticket_num, message.ticket_total_price);
 							add_info(msg);
 							memcpy(send_buf,&message,sizeof(message));
 							ret=send(conn_fd, send_buf, sizeof(message), 0);
                             if(ret<0){
-								thread_err("发送数据出错\n", buff_index);
+                                thread_err((char*)"发送数据出错\n", buff_index);
                             }
 							break;
 						} else {													//剩余票数不足，购买失败
@@ -106,7 +121,7 @@ void * service_thread(void *p){
 							memcpy(send_buf,&message,sizeof(message));
 							ret=send(conn_fd, send_buf, sizeof(message), 0);
                             if(ret<0){
-								thread_err("发送数据出错\n", buff_index);
+                                thread_err((char*)"发送数据出错\n", buff_index);
                             }
 							break;
                         }
@@ -114,8 +129,11 @@ void * service_thread(void *p){
                     pthread_mutex_unlock(&ticket_list[i].ticket_mutex);
                 }
                 break;
+
             case INQUIRE_ONE:
-				for(i=0; i<FLIGHT_NUM; i++) {
+                read_ticket_list();     // 读取数据库机票信息
+                update_ticket_number();
+                for(i=0; i<numRows; i++) {
                     pthread_mutex_lock(&ticket_list[i].ticket_mutex);
                     if(ticket_list[i].flight_ID==message.flight_ID) {
                         message.msg_type=INQUIRE_SUCCEED;
@@ -127,15 +145,18 @@ void * service_thread(void *p){
                         memcpy(send_buf,&message,sizeof(message));
                         ret=send(conn_fd, send_buf, sizeof(message), 0);
                         if(ret<0)
-                            thread_err("发送数据出错\n", buff_index);
+                            thread_err((char*)"发送数据出错\n", buff_index);
                         break;
                     }
 					pthread_mutex_unlock(&ticket_list[i].ticket_mutex);
 				}
 				break;
+
             case INQUIRE_ALL:
 				pos=0;
-				for(i=0; i<FLIGHT_NUM; i++) {
+                read_ticket_list();     // 读取数据库机票信息
+                update_ticket_number();
+                for(i=0; i<numRows; i++) {
 					pthread_mutex_lock(&ticket_list[i].ticket_mutex);
 					message.msg_type=INQUIRE_SUCCEED;
 					message.flight_ID=ticket_list[i].flight_ID;
@@ -149,15 +170,45 @@ void * service_thread(void *p){
                 add_info(msg);
 				ret=send(conn_fd, send_buf, pos, 0);
                 if(ret<0){
-					thread_err("发送数据出错\n", buff_index);
+                    thread_err((char*)"发送数据出错\n", buff_index);
                 }
 				break;
-			default	:
+
+            case ADD_TICKET:
+                read_ticket_list();     // 读取数据库机票信息
+                mysql_init(&mysql);
+                mysql_real_connect(&mysql, "localhost", "zhj", "666588", "linux", 0, NULL, 0);
+                sprintf(sqlstr, "insert into tickets values(%d, %d, %d)", message.flight_ID, message.ticket_num, message.ticket_total_price);
+                mysql_query(&mysql,sqlstr);     // 执行更新语句
+                mysql_close(&mysql);
+                break;
+
+            case UPDATE_TICKET:
+                read_ticket_list();     // 读取数据库机票信息
+                mysql_init(&mysql);
+                mysql_real_connect(&mysql, "localhost", "zhj", "666588", "linux", 0, NULL, 0);
+                sprintf(sqlstr, "update tickets set ticket_price = %d where flight_ID = %d", message.ticket_total_price, message.flight_ID);
+                mysql_query(&mysql,sqlstr);     // 执行更新语句
+                sprintf(sqlstr, "update tickets set ticket_num = %d where flight_ID = %d", message.ticket_num, message.flight_ID);
+                mysql_query(&mysql,sqlstr);     // 执行更新语句
+                mysql_close(&mysql);
+                break;
+
+            case DELETE_TICKET:
+                read_ticket_list();     // 读取数据库机票信息
+                mysql_init(&mysql);
+                mysql_real_connect(&mysql, "localhost", "zhj", "666588", "linux", 0, NULL, 0);
+                sprintf(sqlstr, "delete from tickets where flight_ID = %d", message.flight_ID);
+                mysql_query(&mysql,sqlstr);     // 执行更新语句
+                mysql_close(&mysql);
+                break;
+
+            default:
 				message.msg_type=UNKNOWN_CODE;
 				memcpy(send_buf, &message,sizeof(message));
 				ret=send(conn_fd, send_buf, sizeof(message), 0);
                 if(ret<0){
-					thread_err("发送数据出错\n", buff_index);
+                    thread_err((char*)"发送数据出错\n", buff_index);
                 }
 		}
 	}

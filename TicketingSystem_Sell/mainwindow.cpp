@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "QDebug"
 #include "globalapi.h"
 #include "ticket.h"
 
@@ -33,6 +34,10 @@ void MainWindow::enable_button(bool boolean){
     // 机票查询
     ui->action_inquireone->setEnabled(boolean);
     ui->action_inquireall->setEnabled(boolean);
+    // 管理员操作
+    ui->action_add->setEnabled(boolean);
+    ui->action_update->setEnabled(boolean);
+    ui->action_delete->setEnabled(boolean);
 }
 
 void MainWindow::on_action_connect_triggered(){
@@ -88,12 +93,16 @@ void MainWindow::on_action_disconnect_triggered(){
 
 void MainWindow::on_action_buyticket_triggered(){
     ui->textBrowser->append("Buy Ticket....\n");
+//    char* ticket_num_temp = nullptr;
     QDialog dialog(this);
     QFormLayout form(&dialog);
     dialog.setWindowTitle("机票购买");
     QList<QLineEdit *> fields;
     QLineEdit *ord = new QLineEdit(&dialog);
-    form.addRow(new QLabel("请输入要购买的航班号:"));
+//    update_ticket_number();
+//    sprintf(ticket_num_temp, "请输入要查询的航班号(1-%d):", numRows);
+//    form.addRow(new QLabel(ticket_num_temp));
+    form.addRow(new QLabel("请输入要查询的航班号:"));
     form.addRow(ord);
     QLineEdit *cnt = new QLineEdit(&dialog);
     form.addRow(new QLabel("请输入要购买票的张数:"));
@@ -168,11 +177,16 @@ void MainWindow::on_action_exit_triggered(){
 
 void MainWindow::on_action_inquireone_triggered(){
     ui->textBrowser->append("Inquire One\n");
+
+//    char* ticket_num_temp = nullptr;
     QDialog dialog(this);
     QFormLayout form(&dialog);
     dialog.setWindowTitle("机票查询");
     QList<QLineEdit *> fields;
     QLineEdit *ord = new QLineEdit(&dialog);
+//    update_ticket_number();
+//    sprintf(ticket_num_temp, "请输入要查询的航班号(1-%d):", numRows);
+//    form.addRow(new QLabel(QString(ticket_num_temp)));
     form.addRow(new QLabel("请输入要查询的航班号:"));
     form.addRow(ord);
     fields << ord;
@@ -223,20 +237,20 @@ void MainWindow::on_action_inquireall_triggered(){
     ui->textBrowser->append("Inquire All\n");
     int i,pos;
     char msg[512];
-    char send_buf[512], recv_buf[512];
+    char send_buf[1024], recv_buf[1024];
     init_message();
     message.msg_type=INQUIRE_ALL;
     memcpy(send_buf,&message,sizeof(message));
     int ret=send(socket_fd, send_buf,sizeof(message),0);
     /* 发送出错 */
     if(ret==-1) {
-        display_info("发送失败！请重新发送！") ;
-        return ;
+        display_info("发送失败！请重新发送！");
+        return;
     }
     ret=recv(socket_fd,recv_buf,sizeof(recv_buf),0);
     if(ret==-1) {
-        display_info("接收失败！请重新发送！") ;
-        return ;
+        display_info("接收失败！请重新发送！");
+        return;
     }
     pos=0;
     sprintf(msg,"查询所有航班结果：\n");
@@ -267,6 +281,9 @@ void MainWindow::on_action_show_triggered(){
     form.addRow(new QLabel("购买机票：购买机票"));
     form.addRow(new QLabel("特定航班查询：查询某一特定航班机票信息"));
     form.addRow(new QLabel("所有航班查询：查询所有航班机票信息"));
+    form.addRow(new QLabel("增加航班信息：增加指定的航班机票信息"));
+    form.addRow(new QLabel("更新航班信息：更新指定的航班机票信息"));
+    form.addRow(new QLabel("删除航班信息：删除指定的航班机票信息"));
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok, &dialog);
     form.addRow(&buttonBox);
     QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
@@ -280,7 +297,7 @@ void MainWindow::on_action_about_triggered(){
     QDialog dialog(this);
     QFormLayout form(&dialog);
     dialog.setWindowTitle("关于");
-    form.addRow(new QLabel("<h1>网络售票模拟系统客户端</h1>"));
+    form.addRow(new QLabel("<h1>网络售票模拟系统管理端</h1>"));
     form.addRow(new QLabel("<center>版本 V0.2</center>"));
     form.addRow(new QLabel("本程序仅用于测试，请勿用于商业目的"));
     form.addRow(new QLabel("作者信息: 孙硕、张厚今、戚莘凯"));
@@ -290,5 +307,136 @@ void MainWindow::on_action_about_triggered(){
     QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
     if (dialog.exec() == QDialog::Accepted) {
         display_info("查询信息成功\n");
+    }
+}
+
+void MainWindow::on_action_add_triggered()
+{
+    ui->textBrowser->append("Add Information...");
+
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+    dialog.setWindowTitle("增加航班信息(管理员)");
+    QList<QLineEdit *> fields;
+    QLineEdit *id = new QLineEdit(&dialog);
+    form.addRow(new QLabel("请输入该航班的航班号:"));
+    form.addRow(id);
+    QLineEdit *number = new QLineEdit(&dialog);
+    form.addRow(new QLabel("请输入该航班的票数:"));
+    form.addRow(number);
+    QLineEdit *price = new QLineEdit(&dialog);
+    form.addRow(new QLabel("请输入该航班的票价:"));
+    form.addRow(price);
+    fields << id;
+    fields << number;
+    fields << price;
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+    if (dialog.exec() == QDialog::Accepted) {
+        int flight_ID = id->text().toInt();
+        int ticket_num = number->text().toInt();
+        int ticket_price = price->text().toInt();
+        char send_buf[1024];
+        init_message();
+        message.msg_type=ADD_TICKET;
+        message.flight_ID = flight_ID;
+        message.ticket_num = ticket_num;
+        message.ticket_total_price = ticket_price;
+        memcpy(send_buf,&message,sizeof(message));
+
+        int ret=send(socket_fd, send_buf,sizeof(message),0);
+        /* 发送出错 */
+        if(ret==-1) {
+            display_info("发送失败！请重新发送！");
+            return;
+        }
+        display_info("增加航班信息成功!\n");
+    }
+}
+
+void MainWindow::on_action_update_triggered()
+{
+    ui->textBrowser->append("Update Information...");
+
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+    dialog.setWindowTitle("更新航班信息(管理员)");
+    QList<QLineEdit *> fields;
+    QLineEdit *id = new QLineEdit(&dialog);
+    form.addRow(new QLabel("请输入该航班的航班号:"));
+    form.addRow(id);
+    QLineEdit *number = new QLineEdit(&dialog);
+    form.addRow(new QLabel("请输入该航班的票数:"));
+    form.addRow(number);
+    QLineEdit *price = new QLineEdit(&dialog);
+    form.addRow(new QLabel("请输入该航班的票价:"));
+    form.addRow(price);
+    fields << id;
+    fields << number;
+    fields << price;
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+    if (dialog.exec() == QDialog::Accepted) {
+        int flight_ID = id->text().toInt();
+        int ticket_num = number->text().toInt();
+        int ticket_price = price->text().toInt();
+
+        char send_buf[1024];
+        init_message();
+        message.msg_type=UPDATE_TICKET;
+        message.flight_ID = flight_ID;
+        message.ticket_num = ticket_num;
+        message.ticket_total_price = ticket_price;
+        memcpy(send_buf,&message,sizeof(message));
+
+        int ret=send(socket_fd, send_buf,sizeof(message),0);
+        /* 发送出错 */
+        if(ret==-1) {
+            display_info("发送失败！请重新发送！");
+            return;
+        }
+        display_info("更新航班信息成功!\n");
+    }
+
+}
+
+void MainWindow::on_action_delete_triggered()
+{
+    ui->textBrowser->append("Delete Information...");
+
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+    dialog.setWindowTitle("删除航班信息(管理员)");
+    QList<QLineEdit *> fields;
+    QLineEdit *id = new QLineEdit(&dialog);
+    form.addRow(new QLabel("请输入该航班的航班号:"));
+    form.addRow(id);
+    fields << id;
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+    if (dialog.exec() == QDialog::Accepted) {
+        int flight_ID = id->text().toInt();
+        char send_buf[1024];
+        init_message();
+        message.msg_type=DELETE_TICKET;
+        message.flight_ID = flight_ID;
+        memcpy(send_buf,&message,sizeof(message));
+
+        int ret=send(socket_fd, send_buf,sizeof(message),0);
+        /* 发送出错 */
+        if(ret==-1) {
+            display_info("发送失败！请重新发送！");
+            return;
+        }
+        display_info("删除航班信息成功!\n");
     }
 }

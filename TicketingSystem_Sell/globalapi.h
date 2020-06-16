@@ -27,6 +27,9 @@
 #define	BUY_TICKET 	1
 #define	INQUIRE_ONE	2
 #define	INQUIRE_ALL	3
+#define ADD_TICKET  4
+#define UPDATE_TICKET 5
+#define DELETE_TICKET 6
 
 /*服务器端使用的消息代码含义*/
 #define	BUY_SUCCEED		255

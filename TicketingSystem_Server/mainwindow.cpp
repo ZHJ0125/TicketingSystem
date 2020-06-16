@@ -11,7 +11,7 @@ int flag = 1;
 pthread_t listentid,servicetid;         // 监听线程ID,服务线程ID；
 int isserveropened = false;             // 服务器端是否开启标志位
 
-void * listen_thread(void *p)
+void * listen_thread(void*)
 {
     char msg[512];
     while(1) {
@@ -106,7 +106,7 @@ void MainWindow::on_action_start_triggered(){
     char msg[512];		//提示信息
     /* 初始化数据结构 */
     init_thread_buff();
-    init_ticket_list();
+    read_ticket_list();
     if(!isserveropened){
         /* 创建套接字 */
         listen_fd=socket(AF_INET,SOCK_STREAM,0);
@@ -187,12 +187,13 @@ void MainWindow::on_action_exit_triggered(){
 
 void MainWindow::on_action_inquireone_triggered(){
     ui->textBrowser->append("Inquire One...");
+
     QDialog dialog(this);
     QFormLayout form(&dialog);
     dialog.setWindowTitle("机票查询");
     QList<QLineEdit *> fields;
     QLineEdit *ord = new QLineEdit(&dialog);
-    form.addRow(new QLabel("请输入要查询的航班号(1-10):"));
+    form.addRow(new QLabel("请输入要查询的航班号:"));
     form.addRow(ord);
     fields << ord;
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
@@ -203,13 +204,15 @@ void MainWindow::on_action_inquireone_triggered(){
     /* 点击确认按钮 */
     if (dialog.exec() == QDialog::Accepted){
         char msg[512];
+        read_ticket_list();     // 读取数据库机票信息
+        update_ticket_number();
         QString flight_ord = ord->text();
         unsigned int flight_ID = flight_ord.toInt();
-        if(flight_ID<=0 || flight_ID>10) {	//判断输入的航班号是否正确，不正确的话，给出提示信息，重新输入。
+        if(flight_ID<=0 || flight_ID>(unsigned int)numRows) {	//判断输入的航班号是否正确，不正确的话，给出提示信息，重新输入。
             display_info("输入的航班号错误！请重新输入！");
             return;
         }
-        for(i=0;i<FLIGHT_NUM;i++) {
+        for(i=0;i<numRows;i++) {
             pthread_mutex_lock(&ticket_list[i].ticket_mutex);
             if(ticket_list[i].flight_ID==flight_ID) {
                 sprintf(msg,"你查询的航班号是：%d, 剩余票数：%d,票价：%d\n",ticket_list[i].flight_ID,ticket_list[i].ticket_num,ticket_list[i].ticket_price);
@@ -226,10 +229,14 @@ void MainWindow::on_action_inquireall_triggered(){
     ui->textBrowser->append("Inquire All...");
     int i;
     char msg[512];
-    for(i=0;i<FLIGHT_NUM;i++) {
-        sprintf(msg,"航班号：%d, 剩余票数：%d, 票价：%d\n",ticket_list[i].flight_ID,ticket_list[i].ticket_num, ticket_list[i].ticket_price);
+    read_ticket_list();     // 读取数据库机票信息
+    update_ticket_number();
+
+    for(i=0;i<numRows;i++) {
+        sprintf(msg,"航班号：%d, 剩余票数：%d, 票价：%d",ticket_list[i].flight_ID,ticket_list[i].ticket_num, ticket_list[i].ticket_price);
         display_info(msg);
     }
+    display_info("\n");
 }
 
 void MainWindow::on_action_show_triggered(){
@@ -257,9 +264,10 @@ void MainWindow::on_action_about_triggered(){
     QFormLayout form(&dialog);
     dialog.setWindowTitle("关于");
     form.addRow(new QLabel("<h1>网络售票模拟系统服务端</h1>"));
-    form.addRow(new QLabel("<center>版本 V0.0.0.1</center>"));
+    form.addRow(new QLabel("<center>版本 V0.2</center>"));
     form.addRow(new QLabel("本程序仅用于测试，请勿用于商业目的"));
-    form.addRow(new QLabel("时间: 2020年06月18日"));
+    form.addRow(new QLabel("作者信息: 孙硕、张厚今、戚莘凯"));
+    form.addRow(new QLabel("更新日期: 2020年06月16日"));
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok, &dialog);
     form.addRow(&buttonBox);
     QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
