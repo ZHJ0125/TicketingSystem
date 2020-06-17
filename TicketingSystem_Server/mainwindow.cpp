@@ -264,10 +264,10 @@ void MainWindow::on_action_about_triggered(){
     QFormLayout form(&dialog);
     dialog.setWindowTitle("关于");
     form.addRow(new QLabel("<h1>网络售票模拟系统服务端</h1>"));
-    form.addRow(new QLabel("<center>版本 V0.2</center>"));
+    form.addRow(new QLabel("<center>版本 V0.3</center>"));
     form.addRow(new QLabel("本程序仅用于测试，请勿用于商业目的"));
     form.addRow(new QLabel("作者信息: 孙硕、戚莘凯、张厚今"));
-    form.addRow(new QLabel("更新日期: 2020年06月16日"));
+    form.addRow(new QLabel("更新日期: 2020年06月17日"));
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok, &dialog);
     form.addRow(&buttonBox);
     QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));

@@ -6,12 +6,14 @@
 #define	FLIGHT_NUM 10		//航班总数
 int numRows = 0;
 
-/* 机票的一个简单描述，flight_ID表示航班号，ticket_num表示机票剩余票数 */
+/* 机票的一个简单描述 */
 typedef struct ticket_struct_t {
-    unsigned int flight_ID;
-    unsigned int ticket_num;
-    unsigned int ticket_price;	//票价
-	/*多个线程操作时，必须对机票的剩余数量进行保护。由于这样的操作比较频繁，所以应当对每一个ticket_num使用不同的互斥锁，否则将对线程间并行性有较大影响。*/
+    unsigned int flight_ID;     // 航班号
+    unsigned int ticket_num;    // 机票剩余票数
+    unsigned int ticket_price;	// 票价
+    // 多个线程操作时，必须对机票的剩余数量进行保护
+    // 应当对每一个ticket_num使用不同的互斥锁
+    // 否则将对线程间并行性有较大影响
 	pthread_mutex_t	ticket_mutex;
 } ticket_struct;
 ticket_struct ticket_list[FLIGHT_NUM];
@@ -24,9 +26,9 @@ void read_ticket_list(){
     int i = 0;
     mysql_init(&mysql);
     mysql_real_connect(&mysql, "localhost", "zhj", "666588", "linux", 0, NULL, 0);
-    mysql_query(&mysql, "select * from tickets");       // 调用mysql_store_result之前必须检索数据库
-    result = mysql_store_result(&mysql);    //将查询的全部结果读取到客户端
-    numRows = mysql_num_rows(result);       //统计结果集的行数
+    mysql_query(&mysql, "select * from tickets"); // 调用mysql_store_result之前必须检索数据库
+    result = mysql_store_result(&mysql);          // 将查询的全部结果读取到客户端
+    numRows = mysql_num_rows(result);             // 统计结果集的行数
     if(result){
         for(i=0;i<numRows;i++){
             if((row = mysql_fetch_row(result)) != NULL){
@@ -36,7 +38,7 @@ void read_ticket_list(){
             }
         }
     }
-    mysql_free_result(result);//释放result空间，避免内存泄漏
+    mysql_free_result(result);      // 释放result空间，避免内存泄漏
     mysql_close(&mysql);
 
     return;
