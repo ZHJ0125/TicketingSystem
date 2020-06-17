@@ -28,6 +28,7 @@ int main()
     // mysql_query(&mysql, "select * from tickets");
     // printf("--清空数据测试--\n");
     // printResult(&mysql);
+
     // mysql_query(&mysql, "drop table tickets");    
     // mysql_query(&mysql, "drop database tickets");
     mysql_close(&mysql);
