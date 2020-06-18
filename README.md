@@ -2,6 +2,10 @@
 
 Linux C 机票网络售票系统
 
+## 展示视频
+
+[航班网络售票模拟系统 - 展示视频](https://www.bilibili.com/video/BV14T4y1J7bt/)
+
 ## 服务端
 
 ![server](Data/images/server.png)
