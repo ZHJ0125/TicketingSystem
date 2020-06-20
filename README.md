@@ -10,28 +10,28 @@ Linux C 机票网络售票系统
 
 * 安装Apache
 
-```shell
+```bash
 sudo apt-get update
 sudo apt-get install apache2
 ```
 
 * 安装PHP
 
-```shell
+```bash
 sudo apt-get update
 sudo apt-get install php
 ```
 
 * 安装MySQL数据库
 
-```shell
+```bash
 sudo apt-get install mysql-client mysql-server
 sudo apt-get install libmysqlclient-dev
 ```
 
 * 安装PHPMyAdmin
 
-```shell
+```bash
 sudo apt-get install phpmyadmin
 ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 ```
@@ -46,7 +46,7 @@ ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 
 在Ubuntu终端中输入以下命令进入MySQL命令行界面
 
-```shell
+```bash
 sudo mysql -u root
 ```
 
@@ -54,7 +54,7 @@ sudo mysql -u root
 
 使用以下语句创建新的数据库用户
 
-```shell
+```bash
 CREATE USER 'zhj'@'localhost' IDENTIFIED BY '666588';
 GRANT ALL PRIVILEGES ON *.* TO 'zhj'@'localhost' WITH GRANT OPTION;
 create database linux;
@@ -65,14 +65,14 @@ FLUSH PRIVILEGES;
 
 在终端输入以下语句，若存在linux数据库，则表示创建成功。
 
-```shell
+```bash
 sudo mysql -u root
 show database;
 ```
 
 数据库配置过程的完整操作示例如下：
 
-```shell
+```bash
 zhj@vmware:~$ sudo mysql -u root
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 45
@@ -122,14 +122,14 @@ Bye
 
 进入到项目的`/TicketingSystem/Data`目录下，执行以下语句编译并执行C程序
 
-```shell
+```bash
 gcc mysql_setup.c -o mysql_setup -lmysqlclient
 ./mysql_setup
 ```
 
 完整操作示例如下：
 
-```shell
+```bash
 zhj@vmware:~/TicketingSystem/Data$ ls
 images  mysql_setup.c
 zhj@vmware:~/TicketingSystem/Data$ gcc mysql_setup.c -o mysql_setup -lmysqlclient
