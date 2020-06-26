@@ -166,7 +166,7 @@ zhj@vmware:~/TicketingSystem/Data$
 
 ## 二、项目展示
 
-[航班网络售票模拟系统 - 展示视频](https://www.bilibili.com/video/BV14T4y1J7bt/)
+👉 [航班网络售票模拟系统展示视频 - BiliBili](https://www.bilibili.com/video/BV14T4y1J7bt/) 👈
 
 > 由于众所周知的原因，GitHub仓库里的图片可能加载不出来。您可以前往[本项目的Gitee仓库](https://gitee.com/zhj0125/TicketingSystem)，查看相关图片内容。
 
