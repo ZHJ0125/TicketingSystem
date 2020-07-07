@@ -38,7 +38,7 @@ ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 
 * 测试LAMP环境
 
-使用ifconfig语句获取本地IP地址，在浏览器地址栏中输入`ip/phpmyadmin`，如：`192.168.96.131/phpmyadmin`，若出现PHPMyAdmin界面则表示LAMP环境配置成功。
+使用`ifconfig`语句获取本地IP地址，在浏览器地址栏中输入`{youripaddr}/phpmyadmin`，如：`192.168.96.131/phpmyadmin`，若出现PHPMyAdmin界面则表示LAMP环境配置成功。
 
 ### 1.2 数据库配置
 
@@ -120,7 +120,7 @@ Bye
 
 * 创建数据表
 
-进入到项目的`/TicketingSystem/Data`目录下，执行以下语句编译并执行C程序
+进入到项目的`TicketingSystem/Data`目录下，使用以下语句编译并执行C程序
 
 ```bash
 gcc mysql_setup.c -o mysql_setup -lmysqlclient
