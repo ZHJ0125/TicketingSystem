@@ -67,7 +67,7 @@ FLUSH PRIVILEGES;
 
 ```bash
 sudo mysql -u root
-show database;
+show databases;
 ```
 
 数据库配置过程的完整操作示例如下：
