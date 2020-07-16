@@ -18,6 +18,10 @@ echo "+-------------------------------------------------------+"
 #----------------------------------------------------------------------
 echo "Updating software source ..."
 sudo apt-get update
+sudo apt-get install gcc
+sudo apt-get install g++
+sudo apt-get install make
+sudo apt-get install libgl1-mesa-dev
 echo "Software source update complete."
 #----------------------------------------------------------------------
 echo "Initializing the LAMP architecture ..."
@@ -31,11 +35,13 @@ echo "LAMP architecture has been installed."
 #----------------------------------------------------------------------
 echo "Creating MySQL database ..."
 sudo mysql -u root <<EOF
+drop user 'zhj'@'localhost';
+FLUSH PRIVILEGES;
 CREATE USER 'zhj'@'localhost' IDENTIFIED BY '666588';
 GRANT ALL PRIVILEGES ON *.* TO 'zhj'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 CREATE DATABASE linux;
-SHOW DATABASES;
+SHOW databases;
 QUIT;
 EOF
 echo "MySQL database has been created."
