@@ -3,7 +3,7 @@
 # ZhangHoujin Created on 2020.07.16
 
 echo "+-------------------------------------------------------+"
-echo "|   Welcome to TicketingSystem's Setup program          |"
+echo "|   Welcome to TicketingSystem's Setup Program          |"
 echo "|  ---------------------------------------------------  |"
 echo "|   What to do:                                         |"
 echo "|       1. Initializing the LAMP architecture           |"
@@ -34,14 +34,14 @@ sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 echo "LAMP architecture has been installed."
 #----------------------------------------------------------------------
 echo "Creating MySQL database ..."
-sudo mysql -u root <<EOF
+sudo mysql -u root << EOF
 drop user 'zhj'@'localhost';
 FLUSH PRIVILEGES;
 CREATE USER 'zhj'@'localhost' IDENTIFIED BY '666588';
 GRANT ALL PRIVILEGES ON *.* TO 'zhj'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 CREATE DATABASE linux;
-SHOW databases;
+SHOW DATABASES;
 QUIT;
 EOF
 echo "MySQL database has been created."
@@ -53,17 +53,26 @@ sleep 1
 rm mysql_setup
 echo "The contents of the database have been initialized."
 #----------------------------------------------------------------------
-echo "+-------------------------------------------------------+"
-echo "|   Welcome to TicketingSystem's Setup program          |"
-echo "|  ---------------------------------------------------  |"
-echo "|   What this script has done:                          |"
-echo "|     ✔ 1. The LAMP architecture has been initialized.  |"
-echo "|     ✔ 2. MySQL database has been created.             |"
-echo "|     ✔ 3. database named 'linux'                       |"
-echo "|     ✔ 4. data table named 'tickets'                   |"
-echo "|     ✔ 5. data table password '666588'                 |"
-echo "|  ---------------------------------------------------  |"
-echo "|   Author: ZhangHoujin                                 |"
-echo "|   Date: 2020.07.16                                    |"
-echo "+-------------------------------------------------------+"
+echo "+---------------------------------------------------------------+"
+echo "|         Welcome to TicketingSystem's Setup Program            |"
+echo "|                        Version: V0.3                          |"
+echo "|  -----------------------------------------------------------  |"
+echo "|     What this script has done:                                |"
+echo "|      ✔ 1. The LAMP architecture has been initialized.         |"
+echo "|      ✔ 2. MySQL database has been created.                    |"
+echo "|      ✔ 3. database named 'linux'                              |"
+echo "|      ✔ 4. data table named 'tickets'                          |"
+echo "|      ✔ 5. data table password '666588'                        |"
+echo "|  -----------------------------------------------------------  |"
+echo "|     Then you should use the 'ifconfig' statement to           |"
+echo "|     obtain a local IP address.                                |"
+echo "|     Enter the {youripaddr}/phpmyadmin in browser.             |"
+echo "|     e.g. '192.168.96.131/phpmyadmin'                          |"
+echo "|     Enter the username zhj in phpmyadmin login interface.     |"
+echo "|     The password is 666588                                    |"
+echo "|  -----------------------------------------------------------  |"
+echo "|                                         Author: ZhangHoujin   |"
+echo "|                                           Date: 2020.07.16    |"
+echo "+---------------------------------------------------------------+"
 #-----------------------    End of File   -----------------------------
+
