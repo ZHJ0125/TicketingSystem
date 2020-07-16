@@ -6,22 +6,21 @@ Linux C 机票网络售票系统
 
 ## 一、环境配置
 
-环境配置可以选择使用**自动部署脚本**或者**自行手动配置**，手动配置脚本请[点击此链接](Data/manual_config.md)
+环境配置可以选择使用**自动部署脚本**或者进行**手动配置**，手动配置请跳转至[此链接](Data/manual_config.md)
 
-自动部署方式直接运行Data/setup.sh脚本即可，例子如下
+自动部署方式直接运行`Data/setup.sh`脚本即可，例子如下
 
-```bash
-~/TicketingSystem$ cd Data/
-~/TicketingSystem/Data$ ls
-images  mysql_setup.c  Report  setup.sh
-~/TicketingSystem/Data$ bash setup.sh 
-```
+![Setup](Data/images/setup.png)
 
-自动部署方式会执行LAMP安装及MySQL的相关配置脚本，执行完成后的终端界面如下所示
+自动部署方式会实现LAMP安装并完成MySQL的相关配置，执行完成后的终端界面如下所示
 
 ![autoconfig](Data/images/autoconfig.png)
 
 之后您可以根据上述提示，登录PHPMyAdmin界面查看具体的数据库内容
+
+执行完上述内容后，数据库和LAMP的部分就已经配置好了
+
+接下来您可以打开`Qt for Linux`软件，运行`TicketingSystem_Server`、`TicketingSystem_Client`和`TicketingSystem_Sell`三个文件夹中的QT程序进行测试
 
 ---
 
