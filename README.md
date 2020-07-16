@@ -19,29 +19,7 @@ images  mysql_setup.c  Report  setup.sh
 
 自动部署方式会执行LAMP安装及MySQL的相关配置脚本，执行完成后的终端界面如下所示
 
-```shell
-+---------------------------------------------------------------+
-|         Welcome to TicketingSystem's Setup Program            |
-|                        Version: V0.3                          |
-|  -----------------------------------------------------------  |
-|     What this script has done:                                |
-|      ✔ 1. The LAMP architecture has been initialized.         |
-|      ✔ 2. MySQL database has been created.                    |
-|      ✔ 3. database named 'linux'                              |
-|      ✔ 4. data table named 'tickets'                          |
-|      ✔ 5. data table password '666588'                        |
-|  -----------------------------------------------------------  |
-|     Then you should use the 'ifconfig' statement to           |
-|     obtain a local IP address.                                |
-|     Enter the {youripaddr}/phpmyadmin in browser.             |
-|     e.g. '192.168.96.131/phpmyadmin'                          |
-|     Enter the username zhj in phpmyadmin login interface.     |
-|     The password is 666588                                    |
-|  -----------------------------------------------------------  |
-|                                         Author: ZhangHoujin   |
-|                                           Date: 2020.07.16    |
-+---------------------------------------------------------------+
-```
+![autoconfig](Data/images/autoconfig.png)
 
 之后您可以根据上述提示，登录PHPMyAdmin界面查看具体的数据库内容
 
