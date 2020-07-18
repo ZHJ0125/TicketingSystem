@@ -1,6 +1,6 @@
 # TicketingSystem
 
-> 由于众所周知的原因，GitHub仓库里的图片可能加载不出来。您可以前往[本项目的Gitee仓库](https://gitee.com/zhj0125/TicketingSystem)，查看相关的图片内容。
+> 由于众所周知的原因，GitHub里的图片可能加载不出来。您可以前往[本项目的Gitee仓库](https://gitee.com/zhj0125/TicketingSystem)，查看相关图片内容。
 
 Linux C 机票网络售票系统
 
