@@ -1,5 +1,7 @@
 # TicketingSystem
 
+> 由于众所周知的原因，GitHub仓库里的图片可能加载不出来。您可以前往[本项目的Gitee仓库](https://gitee.com/zhj0125/TicketingSystem)，查看相关的图片内容。
+
 Linux C 机票网络售票系统
 
 本项目中的航班信息存储使用了MySQL数据库，数据库的前端显示使用了LAMP架构，运行程序前需要进行相关配置
