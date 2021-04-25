@@ -4,9 +4,20 @@
 
 Linux C 机票网络售票系统
 
-本项目中的航班信息存储使用了MySQL数据库，数据库的前端显示使用了LAMP架构，运行程序前需要进行相关配置
+## 零、开发环境
+
+项目开发时使用的软件版本如下，您也可以使用其他版本，理论上其它版本的软件也可以兼容本项目
+
+|  软件  |   版本  | 下载方式 |
+|--------|------- |----------|
+| VMware | VMware® Workstation 16 Player 16.1.0 build-17198959 | [官方下载链接](https://www.vmware.com/cn/products/workstation-player.html) |
+| Ubuntu | ubuntu-18.04.5-desktop-amd64   | [清华镜像下载](https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/18.04.5/ubuntu-18.04.5-desktop-amd64.iso) |
+| QT     | qt-opensource-linux-x64-5.11.1 | [官方下载链接](https://download.qt.io/new_archive/qt/5.11/5.11.1/qt-opensource-linux-x64-5.11.1.run) |
+| LAMP   | Apache-2.4.29 / MySQL-5.7.33 / PHP-7.2.24 | 命令行下载，详见下文 |
 
 ## 一、环境配置
+
+本项目中的航班信息存储使用了MySQL数据库，数据库的前端显示使用了LAMP架构，运行程序前需要进行相关配置
 
 环境配置可以选择使用**自动部署脚本**或者进行**手动配置**，手动配置请跳转至[此链接](Data/manual_config.md)
 
