@@ -39,3 +39,6 @@ RESOURCES += \
 
 LIBS += \
     -lmysqlclient
+
+QMAKE_LFLAGS += \
+    -no-pie

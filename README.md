@@ -19,7 +19,7 @@ Linux C 机票网络售票系统
 
 本项目中的航班信息存储使用了MySQL数据库，数据库的前端显示使用了LAMP架构，运行程序前需要进行相关配置
 
-环境配置可以选择使用[自动部署](Data/auto_config.md)脚本或者进行[手动配置](Data/manual_config.md)
+环境配置可以选择使用[自动部署](1_Data/auto_config.md)脚本或者进行[手动配置](1_Data/manual_config.md)
 
 这两种方式选择一种即可，***推荐使用手动配置方式***
 
@@ -37,35 +37,35 @@ Linux C 机票网络售票系统
 
 ### 2.1 服务端
 
-![server](Data/images/server.png)
+![server](1_Data/images/server.png)
 
 ### 2.2 客户购票端
 
 * 客户购票端欢迎界面
 
-![welcome](Data/images/welcome.png)
+![welcome](1_Data/images/welcome.png)
 
 * 客户购票端
 
-![client](Data/images/client.png)
+![client](1_Data/images/client.png)
 
 ### 2.3 管理员售票端
 
 * 管理员售票端登录界面
 
-![login](Data/images/login.png)
+![login](1_Data/images/login.png)
 
 * 管理员售票端
 
-![admin](Data/images/admin.png)
+![admin](1_Data/images/admin.png)
 
 ### 2.4 数据库界面
 
-![mysql](Data/images/mysql.png)
+![mysql](1_Data/images/mysql.png)
 
 ### 2.5 关于我们
 
-![info](Data/images/info.png)
+![info](1_Data/images/info.png)
 
 ---
 

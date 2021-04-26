@@ -16,19 +16,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    login.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    welcome.cpp
 
 HEADERS += \
     globalapi.h \
-    login.h \
     mainwindow.h \
-    ticket.h
+    ticket.h \
+    welcome.h
 
 FORMS += \
-    login.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    welcome.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -40,3 +40,6 @@ RESOURCES += \
 
 LIBS += \
     -lmysqlclient
+
+QMAKE_LFLAGS += \
+    -no-pie
