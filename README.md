@@ -19,19 +19,11 @@ Linux C 机票网络售票系统
 
 本项目中的航班信息存储使用了MySQL数据库，数据库的前端显示使用了LAMP架构，运行程序前需要进行相关配置
 
-环境配置可以选择使用**自动部署脚本**或者进行**手动配置**，手动配置请跳转至[此链接](Data/manual_config.md)
+环境配置可以选择使用[自动部署](Data/auto_config.md)脚本或者进行[手动配置](Data/manual_config.md)
 
-自动部署方式直接运行`Data/setup.sh`脚本即可，例子如下
+这两种方式选择一种即可，***推荐使用手动配置方式***
 
-![Setup](Data/images/setup.png)
-
-自动部署方式会实现LAMP安装并完成MySQL的相关配置，执行完成后的终端界面如下所示
-
-![autoconfig](Data/images/autoconfig.png)
-
-之后您可以根据上述提示，登录PHPMyAdmin界面查看具体的数据库内容
-
-执行完上述内容后，数据库和LAMP的部分就已经配置好了
+执行完上述配置后，数据库和LAMP的部分就配置好了
 
 接下来您可以打开`Qt for Linux`软件，运行`TicketingSystem_Server`、`TicketingSystem_Client`和`TicketingSystem_Sell`三个文件夹中的QT程序进行测试
 
